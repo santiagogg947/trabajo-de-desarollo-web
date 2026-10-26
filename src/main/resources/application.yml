@@ -1,0 +1,26 @@
+server:
+    port: 8080
+    #error:
+       # include-message: always
+
+spring:
+    application:
+        name: demo
+
+    datasource: # los secretos se leen de variables de entorno
+        url: jdbc:mysql://localhost:3306/bank_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+        username: root
+        password: ${DB_PASSWORD}
+        driver-class-name: com.mysql.cj.jdbc.Driver
+    jpa:
+        hibernate:
+            ddl-auto: update # en produccion va: validate
+        show-sql: true
+        properties:
+            hibernate:
+                format_sql: true
+
+app:
+    jwt:
+        secret: ${JWT_SECRET} # Base64, mínimo 32 bytes
+        expiration-ms: 86400000 # 24 horas
