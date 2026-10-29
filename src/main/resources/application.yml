@@ -9,8 +9,8 @@ spring:
 
     datasource: # los secretos se leen de variables de entorno
         url: jdbc:mysql://localhost:3306/bank_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-        username: root
-        password: ${DB_PASSWORD}
+        username: ${DB_USERNAME:root} 
+        password: ${DB_PASSWORD:wolfbloo.2005s}
         driver-class-name: com.mysql.cj.jdbc.Driver
     jpa:
         hibernate:
@@ -19,8 +19,9 @@ spring:
         properties:
             hibernate:
                 format_sql: true
+                dialect: org.hibernate.dialect.MySQLDialect
 
 app:
     jwt:
-        secret: ${JWT_SECRET} # Base64, mínimo 32 bytes
+        secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970 # Base64, mínimo 32 bytes
         expiration-ms: 86400000 # 24 horas
