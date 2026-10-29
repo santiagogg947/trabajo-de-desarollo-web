@@ -1,7 +1,8 @@
-import { ArrowLeftRight, ArrowRight, ArrowUpRight, RefreshCw, Wallet } from 'lucide-react'
-import { formatMoney } from '../lib/formatters'
+import { ArrowLeftRight, ArrowUpRight, Clock3, RefreshCw, Wallet } from 'lucide-react'
+import { formatMoney, shortDate } from '../lib/formatters'
 
 interface DashboardSummaryProps {
+  firstName: string
   accountCount: number
   totalBalance: number
   transactionCount: number
@@ -11,6 +12,7 @@ interface DashboardSummaryProps {
 }
 
 export default function DashboardSummary({
+  firstName,
   accountCount,
   totalBalance,
   transactionCount,
@@ -19,37 +21,48 @@ export default function DashboardSummary({
   onOpenTransfer,
 }: DashboardSummaryProps) {
   return (
-    <section className="summary-grid" aria-label="Resumen financiero">
-      <article className="balance-panel">
-        <div className="balance-panel-top">
-          <span>Saldo total disponible · USD</span>
-          <span className="balance-chip">
-            <Wallet size={14} />{accountCount} {accountCount === 1 ? 'cuenta' : 'cuentas'}
+    <section className="hero" aria-label="Resumen financiero">
+      <div className="hero-main">
+        <div className="hero-top">
+          <div>
+            <span className="hero-eyebrow">TU ESPACIO FINANCIERO</span>
+            <h1>Hola, {firstName}<span className="wave-mark">.</span></h1>
+          </div>
+          <span className="hero-date"><Clock3 size={15} />{shortDate.format(new Date())}</span>
+        </div>
+
+        <div className="hero-balance">
+          <span className="hero-balance-label">Saldo total disponible · USD</span>
+          <div className="balance-value">
+            {loading ? <span className="balance-skeleton" /> : formatMoney(totalBalance)}
+          </div>
+          <span className="hero-balance-note">
+            Consolidado de {accountCount} {accountCount === 1 ? 'cuenta' : 'cuentas'}
           </span>
         </div>
-        <div className="balance-value">
-          {loading ? <span className="balance-skeleton" /> : formatMoney(totalBalance)}
-        </div>
-        <div className="balance-panel-bottom">
-          <span>Consolidado de tus cuentas</span>
-          <button onClick={onRefresh} aria-label="Actualizar saldos" title="Actualizar saldos">
-            <RefreshCw size={16} />
+
+        <div className="hero-actions">
+          <button className="hero-button hero-button-primary" onClick={onOpenTransfer} disabled={accountCount === 0}>
+            <ArrowUpRight size={18} />Transferir dinero
+          </button>
+          <button className="hero-button" onClick={onRefresh}>
+            <RefreshCw size={16} />Actualizar saldos
           </button>
         </div>
-        <div className="balance-decoration balance-decoration-one" />
-        <div className="balance-decoration balance-decoration-two" />
-      </article>
-      <article className="metric-panel">
-        <div className="metric-icon metric-icon-mint"><ArrowLeftRight size={18} /></div>
-        <span className="metric-label">Movimientos registrados</span>
-        <strong className="metric-value">{loading ? '—' : transactionCount}</strong>
-        <span className="metric-footnote">En tus cuentas</span>
-      </article>
-      <button className="transfer-cta" onClick={onOpenTransfer} disabled={accountCount === 0}>
-        <span className="cta-icon"><ArrowUpRight size={20} /></span>
-        <span><strong>Transferir dinero</strong><small>Envía a otra cuenta Bckd</small></span>
-        <ArrowRight className="cta-arrow" size={18} />
-      </button>
+      </div>
+
+      <div className="hero-stats">
+        <article className="hero-stat">
+          <span className="hero-stat-icon hero-stat-blue"><Wallet size={19} /></span>
+          <span className="hero-stat-label">Cuentas activas</span>
+          <strong>{loading ? '—' : accountCount}</strong>
+        </article>
+        <article className="hero-stat">
+          <span className="hero-stat-icon hero-stat-pink"><ArrowLeftRight size={19} /></span>
+          <span className="hero-stat-label">Movimientos registrados</span>
+          <strong>{loading ? '—' : transactionCount}</strong>
+        </article>
+      </div>
     </section>
   )
 }
