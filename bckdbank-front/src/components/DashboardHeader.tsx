@@ -1,6 +1,5 @@
-import { ArrowLeftRight, LayoutDashboard, LogOut, Wallet } from 'lucide-react'
-import { Link, NavLink } from 'react-router-dom'
-import BrandMark from './BrandMark'
+import { ChevronDown } from 'lucide-react'
+import { useLocation } from 'react-router-dom'
 
 interface DashboardHeaderProps {
   email: string
@@ -8,37 +7,25 @@ interface DashboardHeaderProps {
 }
 
 export default function DashboardHeader({ email, onLogout }: DashboardHeaderProps) {
-  const linkClass = ({ isActive }: { isActive: boolean }) => `nav-link ${isActive ? 'is-active' : ''}`
+  const { pathname } = useLocation()
+  const pageName = pathname === '/accounts'
+    ? 'Mis cuentas'
+    : pathname === '/activity'
+      ? 'Movimientos'
+      : 'Resumen'
 
   return (
     <header className="topbar">
-      <div className="topbar-inner">
-        <Link className="brand" to="/" aria-label="Bckd Bank, inicio">
-          <BrandMark /><span className="brand-name">bckd<span>bank</span></span>
-        </Link>
-
-        <nav className="top-nav" aria-label="Navegación principal">
-          <NavLink to="/" end className={linkClass}>
-            <LayoutDashboard size={17} /><span>Resumen</span>
-          </NavLink>
-          <NavLink to="/accounts" className={linkClass}>
-            <Wallet size={17} /><span>Mis cuentas</span>
-          </NavLink>
-          <NavLink to="/activity" className={linkClass}>
-            <ArrowLeftRight size={17} /><span>Movimientos</span>
-          </NavLink>
-        </nav>
-
-        <div className="topbar-actions">
-          <div className="status-pill"><span className="status-dot" />Sesión segura</div>
-          <div className="profile-chip">
-            <span className="avatar">{email.slice(0, 1).toUpperCase()}</span>
-            <span className="profile-email">{email}</span>
-          </div>
-          <button className="icon-button" onClick={onLogout} aria-label="Cerrar sesión" title="Cerrar sesión">
-            <LogOut size={16} />
-          </button>
-        </div>
+      <div className="breadcrumb">
+        <span>Área personal</span><span className="breadcrumb-slash">/</span><strong>{pageName}</strong>
+      </div>
+      <div className="topbar-actions">
+        <div className="status-pill"><span className="status-dot" />Sesión segura</div>
+        <span className="avatar">{email.slice(0, 1).toUpperCase()}</span>
+        <span className="profile-email">{email}</span>
+        <button className="icon-button" onClick={onLogout} aria-label="Cerrar sesión" title="Cerrar sesión">
+          <ChevronDown size={16} />
+        </button>
       </div>
     </header>
   )

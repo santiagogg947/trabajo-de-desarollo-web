@@ -1,12 +1,14 @@
 import { useState } from 'react'
-import { Check, RefreshCw, X } from 'lucide-react'
+import { Check, Clock3, RefreshCw, X } from 'lucide-react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import type {
   Account, AuthResponse, CompanyProfile, Quote, Transaction, TransferValues,
 } from '../lib/api'
+import { shortDate } from '../lib/formatters'
 import ActivityPanel from './ActivityPanel'
 import AccountsPanel from './AccountsPanel'
 import DashboardHeader from './DashboardHeader'
+import DashboardSidebar from './DashboardSidebar'
 import DashboardSummary from './DashboardSummary'
 import MarketPanel from './MarketPanel'
 import TransferDialog from './TransferDialog'
@@ -72,6 +74,7 @@ export default function Dashboard({
 
   return (
     <div className="app-shell">
+      <DashboardSidebar onLogout={onLogout} />
       <main className="main-area">
         <DashboardHeader email={session.email} onLogout={onLogout} />
         <div className="content-wrap">
@@ -82,15 +85,24 @@ export default function Dashboard({
             </div>
           )}
           {isOverview && (
-            <DashboardSummary
-              firstName= {firstName}
-              accountCount={accounts.length}
-              totalBalance={totalBalance}
-              transactionCount={transactions.length}
-              loading={loading}
-              onRefresh={onRefresh}
-              onOpenTransfer={() => setTransferOpen(true)}
-            />
+            <>
+              <section className="welcome-row">
+                <div>
+                  <div className="eyebrow">TU ESPACIO FINANCIERO</div>
+                  <h1>Hola, {firstName}<span className="wave-mark">.</span></h1>
+                  <p className="welcome-copy">Aquí tienes el estado de tus cuentas hoy.</p>
+                </div>
+                <div className="welcome-date"><Clock3 size={15} />{shortDate.format(new Date())}</div>
+              </section>
+              <DashboardSummary
+                accountCount={accounts.length}
+                totalBalance={totalBalance}
+                transactionCount={transactions.length}
+                loading={loading}
+                onRefresh={onRefresh}
+                onOpenTransfer={() => setTransferOpen(true)}
+              />
+            </>
           )}
           <section className="dashboard-grid">
             <div className="primary-column" id="overview">
